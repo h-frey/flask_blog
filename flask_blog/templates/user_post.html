@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1 class="mb-3 text-light">Posts by {{ user.username }} ({{ posts.total }})</h1>
+{% for post in posts.items %}
+
+
+<article class="media content-section">
+
+    <img id="dp"  class="rounded-circle" src="{{url_for('static',filename='profile_pics/'+post.author.image_file) }}"
+        alt="Profile Pic">
+
+    <div class="media-body">
+        <div class="article-metadata">
+            <a href="{{ url_for('user_posts',username=post.author.username) }}" class="mr-2">{{ post. author.username }}</a>
+            <small class="text-muted">{{ post.date_posted.strftime("%d-%m-%Y") }}</small>
+        </div>
+        <h2>
+            <a href="{{ url_for('post',post_id = post.id) }}" class="article-title">{{ post.title }}</a>
+        </h2>
+        <p class="article-content">{{ post.content }}<br>Lorem ipsum dolor sit amet consectetur
+            adipisicing elit. Dicta, in est. Blanditiis ipsam pariatur quam molestiae impedit, aliquam, quo porro nemo
+            voluptatem veniam, architecto maiores reiciendis? Cum unde eius perspiciatis laborum ad ipsum quas vitae
+            repellat, voluptas repudiandae fugit reprehenderit vel quaerat incidunt minima repellendus sint nobis
+            eligendi nostrum debitis porro voluptatibus ut libero consequuntur? Quibusdam dolorum corporis molestias
+            impedit nihil blanditiis, modi sit quidem hic quos nulla nobis asperiores cupiditate quam nisi
+            exercitationem placeat quo fugiat. Exercitationem error quo fugit aspernatur. Soluta repudiandae dolores
+            magni cum quod doloremque enim vero ut eveniet ipsa nam porro quae deleniti consectetur culpa, nostrum
+            debitis corporis consequuntur nisi itaque quia. Eligendi animi quam eaque odio recusandae quisquam? Ratione
+            expedita veniam officia quisquam neque magnam totam et qui dolore harum, quo ducimus adipisci sunt tempore
+            pariatur, natus id commodi aperiam nobis iure excepturi repellat. Ipsa culpa ullam eius quidem cum, dolorem
+            natus provident vel?</p>
+    </div>
+</article>
+
+{% endfor %}
+{% for page_num in posts.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+    {% if page_num %}
+        {% if posts.page == page_num %}
+        <a class="btn btn-info mb-4" href="{{ url_for('user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
+         {% else %}
+        <a class="btn btn-outline-info mb-4" href="{{ url_for('user_posts',username=user.username, page=page_num) }}">{{ page_num }}</a>
+    {% endif %}
+        {% else %}
+    ...
+    {% endif %}
+{% endfor %}
+{% endblock content %}
