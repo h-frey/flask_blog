@@ -37,15 +37,11 @@ class LoginForm(Form):
 
 
 class UpdateAccountForm(Form):
-    
     username = StringField(
         "Username", [InputRequired("Please enter your name")])
-
     email = StringField("Email", [InputRequired("Please enter your email adress"), Email(
         "This field requires a valid email adress ")])
-
-    picture = FileField("Update Profile Picture")
-
+    image_file = FileField("Update Profile Picture",validators=[FileAllowed(["jpg","png"])])
     submit = SubmitField("Update")
 
     def validate_username(self, username):
@@ -66,3 +62,18 @@ class PostForm(Form):
     title = StringField("Title",validators = [InputRequired()])
     content = TextAreaField("Content", [InputRequired()])
     submit = SubmitField("Post")
+
+class RequestResetForm(Form):
+    email = StringField("Email", [InputRequired("Please enter your email")])
+    submit = SubmitField("Request Password Reset")
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError(
+                 "There is no account with that email address. You must regsiter your account first.")
+
+class ResetPasswordForm(Form):
+    password = PasswordField("Password", [InputRequired()])
+    confirm_password = PasswordField("Confirm Password", [InputRequired(),validators.EqualTo("password",message="Passwords must match")])
+    submit = SubmitField("Reset Password")
